@@ -1,0 +1,270 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* --- Reset y estructura --- */
+/* --- Reset y estilos base --- */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    background-color: #121212; /* fondo general oscuro */
+    color: #fff;
+}
+
+main {
+    flex: 1;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #004d40, #000000); /* degradado del contenido */
+}
+
+/* --- Encabezados de divisiones --- */
+h2 {
+    color: #4CAF50; /* verde llamativo */
+    margin-top: 40px;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 5px;
+}
+
+/* --- Tabla de goleadores --- */
+.tabla-goleadores {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #1E1E1E;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    margin-bottom: 40px;
+}
+
+/* Encabezado de tabla */
+.tabla-goleadores thead {
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    font-weight: 600;
+    text-align: left;
+}
+
+.tabla-goleadores th, 
+.tabla-goleadores td {
+    padding: 12px 15px;
+}
+
+/* Filas de tabla */
+.tabla-goleadores tbody tr {
+    border-bottom: 1px solid #2E2E2E;
+    transition: background 0.3s;
+}
+
+.tabla-goleadores tbody tr:nth-child(even) {
+    background-color: #2A2A2A;
+}
+
+.tabla-goleadores tbody tr:hover {
+    background-color: #3C3C3C;
+}
+
+/* Posición destacada */
+.tabla-goleadores tbody tr td:first-child {
+    font-weight: 600;
+    color: #FFD700; /* dorado para la posición */
+}
+
+/* Mensaje de tabla vacía */
+.tabla-goleadores tbody tr td[colspan="4"] {
+    text-align: center;
+    font-style: italic;
+    color: #AAAAAA;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .tabla-goleadores th, .tabla-goleadores td {
+        padding: 10px 8px;
+        font-size: 0.9em;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+}
+
+
+/* --- Navbar --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #121212;
+    padding: 15px 30px;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+.navbar .logo {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.navbar .nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar .nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.navbar .nav-links a:hover {
+    color: #66bb6a;
+}
+
+.navbar .menu-toggle {
+    display: none;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+
+/* --- Footer --- */
+footer {
+    background: #121212;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    font-size: 0.95em;
+}
+
+footer a {
+    color: #2e7d32;
+    text-decoration: none;
+    margin: 0 8px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .navbar .nav-links {
+        position: absolute;
+        top: 65px;
+        right: 0;
+        background: #121212;
+        flex-direction: column;
+        width: 200px;
+        display: none;
+        padding: 15px 0;
+        border-radius: 0 0 8px 8px;
+    }
+    .navbar .nav-links.show {
+        display: flex;
+    }
+    .navbar .menu-toggle {
+        display: block;
+    }
+
+    .tabla-goleadores, .tabla-goleadores thead, .tabla-goleadores tbody, .tabla-goleadores th, .tabla-goleadores td, .tabla-goleadores tr {
+        display: block;
+        width: 100%;
+    }
+
+    .tabla-goleadores th {
+        position: sticky;
+        top: 0;
+        background-color: #2e7d32;
+        color: #fff;
+    }
+
+    .tabla-goleadores td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    .tabla-goleadores td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+}
+</style>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">Liga San José</div>
+    <div class="nav-links" id="navLinks">
+        <a href="{% url 'home' %}">Inicio</a>
+        <a href="{% url 'ver_torneo' %}">Tabla</a>
+        <a href="{% url 'goleadores' %}">Goleadores</a>
+        <a href="{% url 'partidos' %}">Partidos</a>
+        <a href="#">Contacto</a>
+    </div>
+    <div class="menu-toggle" id="menuToggle">&#9776;</div>
+</nav>
+
+<main>
+    <!-- Sección Goleadores -->
+{% for item in divisiones_con_jugadores %}
+    <h2>{{ item.division.nombre }}</h2>
+
+    <table class="tabla-goleadores">
+        <thead>
+            <tr>
+                <th>Posición</th>
+                <th>Jugador</th>
+                <th>Equipo</th>
+                <th>Goles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for jugador in item.jugadores %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ jugador.nombre }}</td>
+                <td>{{ jugador.equipo.nombre }}</td>
+                <td>{{ jugador.goles }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No hay goles registrados aún.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+
+    </section>
+</main>
+
+<!-- Footer -->
+<footer>
+    &copy; 2025 Liga San José | Todos los derechos reservados. 
+    <br>
+    <a href="#">Política de Privacidad</a> | <a href="#">Términos de Uso</a> | 
+    <a href="#">Contacto</a>
+</footer>
+
+<!-- Script Navbar Responsive -->
+<script>
+const menuToggle = document.getElementById('menuToggle');
+const navLinks = document.getElementById('navLinks');
+
+menuToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('show');
+});
+</script>
