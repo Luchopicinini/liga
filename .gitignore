@@ -1,0 +1,15 @@
+# Entorno virtual
+venv/
+
+# Archivos compilados
+*.pyc
+__pycache__/
+
+# Archivos de Django collectstatic
+staticfiles/
+
+# Logs
+*.log
+
+# Configs locales
+.env
