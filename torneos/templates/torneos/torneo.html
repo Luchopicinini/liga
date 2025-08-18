@@ -1,0 +1,193 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liga San José</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<style>
+/* --- Reset y general --- */
+* { box-sizing: border-box; margin:0; padding:0; }
+
+/* --- Fondo degradado verde --- */
+body { 
+    font-family: 'Poppins', sans-serif; 
+    background: linear-gradient(135deg, #004d40, #00ff88); 
+    color: #fff; 
+    display:flex; 
+    flex-direction:column; 
+    min-height:100vh; 
+}
+
+/* --- NAVBAR ORIGINAL --- */
+.navbar {
+    display:flex; justify-content:space-between; align-items:center; background:#111; padding:15px 30px;
+    position:sticky; top:0; z-index:1000; box-shadow:0 3px 10px rgba(0,0,0,0.4);
+}
+.logo { font-size:1.8em; font-weight:700; color:#00ff88; }
+.nav-links { display:flex; align-items:center; gap:25px; transition:all 0.3s ease; }
+.nav-links a { text-decoration:none; color:#fff; font-weight:600; padding:6px 10px; transition:0.3s; }
+.nav-links a:hover { color:#00ff88; transform:scale(1.05); }
+.dropdown { position:relative; }
+.dropbtn { cursor:pointer; display:flex; align-items:center; }
+.dropdown-content { position:absolute; top:100%; left:0; display:none; flex-direction:column; background:#222; border-radius:5px; overflow:hidden; min-width:160px; box-shadow:0 5px 15px rgba(0,0,0,0.5); z-index:1001; transition:all 0.3s ease; }
+.dropdown-content a { padding:12px 15px; border-bottom:1px solid #333; }
+.dropdown-content a:hover { background:#333; }
+.dropdown:hover .dropdown-content { display:flex; }
+.menu-toggle { display:none; font-size:28px; cursor:pointer; color:#fff; }
+
+/* --- NUEVOS ESTILOS PARA TABLAS --- */
+main { flex:1; max-width:1400px; margin:40px auto; padding:0 20px; }
+h1 { text-align:center; color:#fff; font-size:2.8rem; margin-bottom:50px; border-bottom:3px solid #00ff88; padding-bottom:12px; }
+
+/* Contenedor de cada división */
+.division-container {
+    margin-bottom:30px; border-radius:12px; overflow:hidden; background:rgba(27,27,27,0.9); 
+    box-shadow:0 6px 18px rgba(0,0,0,0.4); transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.division-container:hover { transform:translateY(-3px); box-shadow:0 10px 30px rgba(0,0,0,0.5); }
+
+/* Botón toggle */
+.toggle-btn {
+    width:100%; padding:15px 20px; text-align:left; background:linear-gradient(135deg,#00ff88,#00994d);
+    border:none; color:#fff; font-size:1.2rem; font-weight:600; cursor:pointer; transition:0.3s;
+}
+.toggle-btn:hover { background:linear-gradient(135deg,#00994d,#00ff88); }
+
+/* Tabla siempre visible y estilizada */
+.tabla-contenedor {
+    max-height:none !important;
+    overflow-x:auto;
+}
+table {
+    width:100%; border-collapse:collapse; min-width:700px; font-size:0.95rem;
+}
+th, td { padding:12px 15px; text-align:center; border-bottom:1px solid #333; }
+th { background:#111; color:#00ff88; text-transform:uppercase; position:sticky; top:0; z-index:1; }
+tr:nth-child(even) { background-color: rgba(0,255,136,0.1); }
+tr:hover { background-color: rgba(0,255,136,0.2); }
+
+/* Mensaje tabla vacía */
+.empty { text-align:center; font-style:italic; color:#eee; margin:20px 0; }
+
+/* --- FOOTER ORIGINAL --- */
+footer {
+    background:#111; color:#fff; text-align:center; padding:30px 20px; font-size:0.95em;
+}
+footer a { color:#00ff88; text-decoration:none; margin:0 8px; transition:color 0.3s; }
+footer a:hover { text-decoration:underline; }
+.social-icon i { color:#00ff88; font-size:1.5em; margin:0 10px; transition:transform 0.3s, color 0.3s; }
+.social-icon:hover i { transform:scale(1.2); color:#66ffaa; }
+
+/* Responsive */
+@media(max-width:992px){main{max-width:1000px;}}
+@media(max-width:768px){
+    .menu-toggle{display:block;}
+    .nav-links{position:absolute; top:65px; right:0; width:220px; background:#111; flex-direction:column; display:none; border-radius:0 0 8px 8px;}
+    .nav-links.show{display:flex;}
+    .nav-links a{padding:10px 20px;}
+    h1{font-size:2.2rem;}
+    th, td{padding:10px; font-size:0.9rem;}
+}
+@media(max-width:480px){
+    h1{font-size:1.8rem;}
+    th, td{padding:8px; font-size:0.85rem;}
+    table{min-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR ORIGINAL -->
+<nav class="navbar">
+    <div class="logo">Liga San José</div>
+    <div class="nav-links" id="navLinks">
+        <a href="{% url 'home' %}">Inicio</a>
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Estadísticas ▾</a>
+            <div class="dropdown-content">
+                <a href="{% url 'ver_torneo' %}">Tabla</a>
+                <a href="{% url 'goleadores' %}">Goleadores</a>
+                <a href="{% url 'partidos' %}">Partidos</a>
+            </div>
+        </div>
+        <a href="#">Contacto</a>
+    </div>
+    <div class="menu-toggle" id="menuToggle">&#9776;</div>
+</nav>
+
+<!-- MAIN CON NUEVO ESTILO DE TABLAS -->
+<main>
+<h1>Torneos por División</h1>
+
+{% for item in divisiones_con_tabla %}
+    <h2>{{ item.division.nombre }}</h2>
+    <table class="tabla-goleadores">
+        <thead>
+            <tr>
+                <th>Posición</th>
+                <th>Equipo</th>
+                <th>Puntos</th>
+                <th>DF</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fila in item.tabla %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ fila.equipo.nombre }}</td>
+                <td>{{ fila.puntos }}</td>
+                <td>{{ fila.diferencia_goles }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No hay equipos registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+
+</main>
+
+<!-- FOOTER ORIGINAL -->
+<footer>
+    &copy; 2025 Liga San José | Todos los derechos reservados.
+    <br>
+    <a href="#">Política de Privacidad</a> | <a href="#">Términos de Uso</a> | <a href="#">Contacto</a>
+    <br><br>
+    <a href="https://www.facebook.com" target="_blank" class="social-icon"><i class="fab fa-facebook"></i></a>
+    <a href="https://www.instagram.com" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+</footer>
+
+<!-- Scripts -->
+<script>
+// Accordion divisiones (opcional)
+document.querySelectorAll('.toggle-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+        const tabla = btn.nextElementSibling;
+        tabla.classList.toggle('show');
+    });
+});
+
+// Menu hamburguesa
+const menuToggle=document.getElementById('menuToggle');
+const navLinks=document.getElementById('navLinks');
+menuToggle.addEventListener('click',()=>{
+    navLinks.classList.toggle('show');
+    menuToggle.classList.toggle('active');
+});
+
+// Dropdown toggle para móviles
+document.querySelectorAll(".dropbtn").forEach(btn=>{
+    btn.addEventListener("click",function(e){
+        e.preventDefault();
+        this.parentElement.classList.toggle("open");
+    });
+});
+</script>
+</body>
+</html>

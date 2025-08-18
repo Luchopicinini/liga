@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Liga San José</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+    /* Reset y global */
+    * { box-sizing: border-box; margin:0; padding:0; }
+    html, body { font-family: 'Poppins', sans-serif; background:#121212; color:#fff; scroll-behavior: smooth; }
+
+    body { 
+    font-family: 'Poppins', sans-serif; 
+    background: linear-gradient(135deg, #004d40, #00ff88); 
+    color: #fff; 
+    display:flex; 
+    flex-direction:column; 
+    min-height:100vh; 
+}
+    /* Navbar */
+    .navbar { display:flex; justify-content:space-between; align-items:center; background:#111; padding:15px 30px; position:sticky; top:0; z-index:1000; box-shadow:0 3px 10px rgba(0,0,0,0.4); }
+    .logo { font-size:1.8em; font-weight:700; color:#00ff88; }
+    .nav-links { display:flex; gap:25px; align-items:center; transition: all 0.3s ease; }
+    .nav-links a { text-decoration:none; color:#fff; font-weight:600; padding:6px 10px; transition:0.3s; }
+    .nav-links a:hover { color:#00ff88; transform: scale(1.05); }
+
+    /* Dropdown */
+    .dropdown { position: relative; }
+    .dropbtn { cursor:pointer; display:flex; align-items:center; }
+    .dropdown-content { position:absolute; top:100%; left:0; display:none; flex-direction:column; background:#222; border-radius:5px; overflow:hidden; min-width:160px; box-shadow:0 5px 15px rgba(0,0,0,0.5); z-index:1001; transition: all 0.3s ease; }
+    .dropdown-content a { padding:12px 15px; border-bottom:1px solid #333; }
+    .dropdown-content a:hover { background:#333; }
+    .dropdown:hover .dropdown-content { display:flex; }
+
+    /* Botón hamburguesa */
+    .menu-toggle { display:none; font-size:28px; cursor:pointer; color:#fff; }
+
+    /* Quick Links */
+    .quick-links { display:flex; justify-content:center; flex-wrap:wrap; gap:20px; background:#004d40; padding:15px 10px; }
+    .quick-links a { color:#fff; font-weight:600; text-decoration:none; padding:10px 20px; background:#00796b; border-radius:10px; transition: all 0.3s; }
+    .quick-links a:hover { background:#00bfa5; transform: scale(1.05); }
+
+    /* Cards principal dinámicas */
+    .cards-container { display:flex; justify-content:center; flex-wrap:wrap; gap:30px; padding:40px 20px; }
+    .card { background:#1e2a24; border-radius:15px; overflow:hidden; width:300px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.5); transition: transform 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease; cursor:pointer; }
+    .card img { width:100%; height:180px; object-fit:cover; }
+    .card h3 { color:#a5d6a7; margin:15px 0 10px; }
+    .card p { color:#ccc; margin:0 15px 15px; line-height:1.4em; }
+    .btn { display:inline-block; margin-bottom:20px; text-decoration:none; background:#a5d6a7; color:#004d40; padding:10px 25px; border-radius:12px; font-weight:600; transition: all 0.3s ease; }
+    .btn:hover { background:#66bb6a; color:#fff; transform: scale(1.05); }
+    .card:hover { transform: translateY(-10px) scale(1.05) rotateX(3deg); box-shadow:0 25px 50px rgba(0,0,0,0.7); filter: brightness(1.1); }
+
+    /* Noticias dinámicas */
+    .section-news { max-width:1000px; margin:50px auto; background:rgba(0,77,64,0.85); padding:30px 40px; border-radius:15px; }
+    .section-news h2 { text-align:center; font-size:2.2em; margin-bottom:30px; color:#a5d6a7; text-transform:uppercase; }
+    .news-cards { display:flex; flex-wrap:wrap; gap:25px; justify-content:center; }
+    .news-card { background:#1b1b1b; padding:20px; border-radius:12px; flex:1 1 250px; transition: transform 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease; cursor:pointer; }
+    .news-card:hover { transform: translateY(-5px) scale(1.03); box-shadow:0 15px 35px rgba(0,0,0,0.5); filter: brightness(1.05); }
+    .news-card h3 { color:#66bb6a; margin-bottom:10px; }
+    .news-card p { color:#ccc; }
+
+    /* Footer */
+    footer { background:#111; color:#fff; text-align:center; padding:30px 20px; font-size:0.95em; }
+    footer a { color:#00ff88; text-decoration:none; margin:0 8px; }
+    footer a:hover { text-decoration:underline; }
+
+    /* Iconos redes sociales */
+    .social-icon i { color: #00ff88; font-size: 1.5em; margin-right: 10px; transition: transform 0.3s, color 0.3s; }
+    .social-icon:hover i { transform: scale(1.2); color: #66ffaa; }
+
+    /* Animaciones de scroll */
+    .scroll-item { opacity: 0; transform: translateY(30px) scale(0.95); transition: all 0.6s ease-out; }
+    .scroll-item.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+    /* Responsive */
+    @media (max-width: 992px) { .cards-container { gap:20px; } .news-cards { gap:15px; } }
+    @media (max-width: 768px) {
+        .menu-toggle { display:block; }
+        .nav-links { position:absolute; top:65px; right:0; width:220px; background:#111; flex-direction:column; display:none; border-radius:0 0 8px 8px; }
+        .nav-links.active { display:flex; }
+        .dropdown.open .dropdown-content { display:flex; flex-direction:column; }
+        .cards-container { flex-direction:column; align-items:center; }
+        .card { width:90%; }
+        .news-cards { flex-direction:column; gap:15px; }
+        .quick-links { flex-direction:column; gap:15px; }
+    }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">Liga San José</div>
+    <div class="nav-links" id="navLinks">
+        <a href="{% url 'home' %}">Inicio</a>
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Estadísticas ▾</a>
+            <div class="dropdown-content">
+                <a href="{% url 'ver_torneo' %}">Tabla</a>
+                <a href="{% url 'goleadores' %}">Goleadores</a>
+                <a href="{% url 'partidos' %}">Partidos</a>
+            </div>
+        </div>
+        <a href="#">Contacto</a>
+    </div>
+    <div class="menu-toggle" id="menuToggle">&#9776;</div>
+</nav>
+
+<!-- Contenido principal -->
+<main>
+    <div class="cards-container">
+        <div class="card scroll-item">
+            <img src="{% static 'img/1.png' %}" alt="Tabla">
+            <h3>Ver Tabla</h3>
+            <p>Consulta la tabla de posiciones actualizada de la liga.</p>
+            <a href="{% url 'ver_torneo' %}" class="btn">Ir</a>
+        </div>
+        <div class="card scroll-item">
+            <img src="{% static 'img/2.png' %}" alt="Goleadores">
+            <h3>Ver Goleadores</h3>
+            <p>Mira quiénes son los máximos goleadores de la temporada.</p>
+            <a href="{% url 'goleadores' %}" class="btn">Ir</a>
+        </div>
+        <div class="card scroll-item">
+            <img src="{% static 'img/3.png' %}" alt="Partidos">
+            <h3>Ver Partidos</h3>
+            <p>Revisa los próximos partidos y resultados recientes.</p>
+            <a href="{% url 'partidos' %}" class="btn">Ir</a>
+        </div>
+    </div>
+
+    <div class="section-news">
+        <h2>Últimas Noticias</h2>
+        <div class="news-cards">
+            <div class="news-card scroll-item">
+                <h3>Gran Final de la Liga</h3>
+                <p>🏆 Se viene la gran final de la liga el próximo sábado.</p>
+            </div>
+            <div class="news-card scroll-item">
+                <h3>Récord de Goles</h3>
+                <p>⚽ Goleadores actualizado.</p>
+            </div>
+            <div class="news-card scroll-item">
+                <h3>Calendario Actualizado</h3>
+                <p>📅 Actualización de calendario de partidos para la segunda vuelta.</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    &copy; 2025 Liga San José | Todos los derechos reservados.
+    <br>
+    <a href="#">Política de Privacidad</a> | <a href="#">Términos de Uso</a> | <a href="#">Contacto</a>
+    <br><br>
+    <a href="https://www.facebook.com" target="_blank" class="social-icon">
+        <i class="fab fa-facebook"></i>
+    </a>
+    <a href="https://www.instagram.com/liga_sanjose" target="_blank" class="social-icon">
+        <i class="fab fa-instagram"></i>
+    </a>
+</footer>
+
+<!-- Script hamburguesa y animaciones -->
+<script>
+const menuToggle = document.getElementById("menuToggle");
+const navLinks = document.getElementById("navLinks");
+
+menuToggle.addEventListener("click", () => { navLinks.classList.toggle("active"); });
+document.querySelectorAll(".dropbtn").forEach(btn => {
+    btn.addEventListener("click", function(e){
+        e.preventDefault();
+        this.parentElement.classList.toggle("open");
+    });
+});
+
+// Animación al hacer scroll
+const scrollItems = document.querySelectorAll('.scroll-item');
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.2 });
+
+scrollItems.forEach(item => observer.observe(item));
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Division, TablaPosiciones, Partido, Jugador, Equipo
 from django.utils import timezone
+from .models import Division, TablaPosiciones, Partido, Jugador, Equipo
 
 def home(request):
     divisiones = Division.objects.all()
@@ -56,7 +56,6 @@ def goleadores(request):
     divisiones_con_jugadores = []
 
     for division in divisiones:
-        # Traemos los jugadores cuyo equipo pertenece a esta división
         jugadores = Jugador.objects.filter(equipo__division=division).order_by('-goles')
         divisiones_con_jugadores.append({
             'division': division,
@@ -66,8 +65,6 @@ def goleadores(request):
     return render(request, 'torneos/goleadores.html', {
         'divisiones_con_jugadores': divisiones_con_jugadores
     })
-
-
 
 def partidos(request):
     divisiones = Division.objects.all()
